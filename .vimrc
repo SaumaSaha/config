@@ -1,69 +1,99 @@
-" Syntax and numbered line and highlight
-syntax on
-set nu
-set incsearch
-set hlsearch
+" set color format 256
+set t_Co=256
+set termguicolors
+colorscheme base16-gigavolt
+
+syntax on                        " set syntax highlight on
+set nu                           " set line numbers
+set encoding=UTF-8
+" set cursorline
+
+" Highlighting
+set autoread
+set incsearch                    " Incremental search. Highlight as you type
+set hlsearch                     " Highlight search results once typed
+set ignorecase
+set smartcase
 nohl
 
-" Autoread on
-set autoread
-
-" Indentation
-filetype indent on " turns on autoindent based on file type
-set autoindent " Auto indentation
-set expandtab " convert tabs to spaces
-set tabstop=2 " width of tabs for a \t char read from a file
-set softtabstop=2 " width of tab when tab or backspace is pressed
-set shiftwidth=2 " width of tab on indentation
-set backspace=indent,eol,start
-
-" Wrap
-set wrap
-
-" Status
-set ruler
-set showcmd
-set noshowmode
+syntax enable
+filetype indent on
 
 " Backup
 set nobackup
-set noswapfile
+set noswapfile 
 
-" Title
+set autoindent                 " Auto indentation
+set expandtab                  " Convert tabs to spaces
+set tabstop=2                  " width of a tab
+set softtabstop=2              " width of a tab when back_key or tab_key is pressed
+set shiftwidth=2               " width of tab on indentation
+set smartindent
+set backspace=indent,eol,start
+
+" Status
+set showcmd
+set ruler
+set noshowmode
+
+" wrap
+set wrap
+set linebreak
+
+" Visual display
 set title
+set cursorline
 
-" Fold
+" Don't update screen during macro and script execution
+set lazyredraw
+
+" Folds
 set foldmethod=indent
 set foldnestmax=3
 
-" Mouse
-" set mouse=a
-
-" Leader
-let mapleader=','
+let mapleader=","
 
 " Custom mappings
-nnoremap <leader><space> :set relativenumber!<cr>
-nnoremap <leader>ev :vsplit $MYVIMRC<cr>
-
-" Auto Complete word
+noremap <leader><space> :set relativenumber!cr>
+noremap <leader>ev :vsplit $MYVIMRC<cr>
+nnoremap <leader>sv :source $MYVIMRC<cr>
 inoremap <tab> <C-p>
+inoremap jk <esc>
+
+" copy line down
+inoremap <leader>cd <esc>yyp
+
+" Copy to ClipBoard
+vnoremap <c-y> "*y
+
+" save in insert mode
+inoremap <c-s> <esc>:w<cr>
+
+" quit shorthand
+nnoremap <leader>q :q!<cr>
+
+" Capitalize a word
+nnoremap <c-u> bgUw
+
+" change buffer
+nnoremap <c-n> :bn<cr>
+
+" writing a file
+nnoremap <leader>w :w<cr>
+inoremap <C-v> <C-r>
 
 " Auto Complete Quotes and Brackets
+inoremap '<tab> ''<Left>
 inoremap "<tab> ""<Left>
 inoremap [<tab> []<Left>
 inoremap (<tab> ()<Left>
 inoremap {<tab> {}<Left>
-inoremap '<tab> ''<Left>
 
-" Get Templates
-inoremap f<tab> function() {<cr><cr>}<Up><Up><esc>wwwwa
+" Templates
+inoremap f<tab> <esc>viwdiconst <esc>pa = function() {<cr>};<Up><esc>4w<Right>i
 inoremap for<tab> for() {<cr>}<up><esc>wa
 inoremap if<tab> if() {<cr>}<up><esc>wa
 inoremap while<tab> while() {<cr>}<up><esc>wa
-
-" Save from Insert Mode
-inoremap <C-s> <esc>:w<cr>
 
 " Move line up or down
 inoremap <C-j> <esc>:m+1<cr><esc>i
@@ -71,41 +101,12 @@ inoremap <C-k> <esc>:m-2<cr><esc>i
 nnoremap <C-j> :m+1<cr>
 nnoremap <C-k> :m-2<cr>
 
-" Go to normal mode from insert mode
-inoremap jk <esc>
-
-" Uppercase and Lowercase a word
-inoremap <C-a> <esc>gUiwi
-inoremap <C-l> <esc>guiwi
-
 " Abbreviations
 iabbrev ss@ sauma.saha@thoughtworks.com
 
-" Switching buffer
-nnoremap <leader>nb :bnext<cr>
-nnoremap <leader>np :bprevious<cr>
-
-" Source
-nnoremap <leader>sv :source $MYVIMRC<cr>
-
-" Quoting a word
-nnoremap <leader>" viw<esc>a"<esc>bi"<esc>lel
-
-" Start of line
+" Custom movement
 nnoremap H ^
 nnoremap L $
-
-" Writing a file
-nnoremap <leader>w :w<cr>
-
-" Quit a file
-nnoremap <leader>q :q!<cr>
-
-" Coping a line
-nnoremap <leader>cd yyp
-
-" Coping to system clipboard
-vnoremap <C-y> "*y
 
 " Selecting block by block
 nnoremap <C-s> ViB
@@ -114,7 +115,8 @@ vnoremap <C-s> ViB
 " Auto indentation
 augroup AutoIndent
   autocmd!
-  autocmd BufWritePre * :normal gg=G``
+  autocmd BufWritePre *.js :normal gg=G``
+  autocmd BufWritePre *.sh :normal gg=G``
 augroup END
 
 augroup Comment
@@ -134,34 +136,33 @@ augroup Comment
   autocmd FileType javascript nnoremap <leader>bu ?\/\*<cr>dd/\*\/<cr>dd
 augroup END
 
-" Vimscript file settings ---------------------------- {{{
-augroup filetype_vim
-  autocmd!
-  autocmd FileType vim setlocal foldmethod=marker
-augroup END
-" }}}
+set wildmenu                      " display all matching files when tab complete
 
-" Color
-colo OceanicNext
+" Mappings for nerd tree
+nnoremap <leader>f :NERDTreeToggle<cr>
 
-nnoremap <leader>f :NERDTree<cr> 
+" Themes configuration
+set background=dark
 
-let g:airline_theme = 'murmur'
-let g:airline#extensions#tabline#enabled = 1
+" Airline modification
+let g:airline_theme='murmur'
 let g:airline_powerline_fonts = 1
-
-let g:NERDTreeFileExtensionHighlightFullName = 1
-let g:NERDTreeExactMatchHighlightFullName = 1
-let g:NERDTreePatternMatchHighlightFullName = 1
-
-let g:NERDTreeHighlightFolders = 1 " enables folder icon highlighting using exact match
-let g:NERDTreeHighlightFoldersFullName = 1 " highlights the folder name
+let g:airline#extensions#tabline#enabled = 1
 
 let g:webdevicons_enable = 1
-let g:webdevicons_enable_airline_statusline = 1
-let g:webdevicons_enable_airline_tabline = 1
+let g:webdevicons_enable_nerdtree = 1
 let g:webdevicons_conceal_nerdtree_brackets = 1
 
-if exists("g:loaded_webdevicons")
+" Nerd Tree configuration 
+let NERDTreeMinimalUI=1           " Remove nerd tree help icon
+let g:NERDTreeFileExtensionHighlightFullName=1
+let g:NERDTreeExactMatchHighlightFullName=1
+let g:NERDTreePatternMatchHighlightFullName=1
+let g:NERDTreeHighlightFolders=1 "  enables folder icon highlighting using exact match
+let g:NERDTreeHighlightFoldersFullName=1 "  highlights the folder name
+
+hi Special term=bold ctermfg=8 guifg=#a1d2e6
+
+if exists(" g:loaded_webdevicons")
   call webdevicons#refresh()
 endif
